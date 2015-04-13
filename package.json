@@ -1,0 +1,34 @@
+{
+    "name": "json-schema-to-apiary",
+    "version": "1.0.0",
+    "engineStrict": true,
+    "license": "OPL",
+    "engines": {
+        "node": ">= 0.10.0"
+    },
+    "description": "Replaces json-schemas into apib using Handlebars library.",
+    "main": "index.js",
+    "scripts": {
+        "test": "test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yovendielmundo/json-schema-to-apiary.git"
+    },
+    "keywords": [
+        "apiary",
+        "blueprint",
+        "json-schema"
+    ],
+    "dependencies": {
+        "handlebars": "~2.0.0",
+        "optimist": "~0.6.1"
+    },
+    "bin": {
+        "jsonschematoapib": "./index.js"
+    },
+    "authors": [
+        "Luis Miguel Osorio Castrillon"
+    ],
+    "preferGlobal": true
+}

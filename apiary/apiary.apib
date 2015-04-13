@@ -1,0 +1,268 @@
+FORMAT: 1A
+HOST: https://lcoalhost/api
+
+# Json schema tool
+
+*How's the things going? thinging*
+
+Current version is only dedicated to **Test** json shema tool services.
+
+
+# Group customers
+
+## Customer list  [/customers]
+
+This resource creates a customer on the system.
+
+Resource intended to be a *one time use only* resource for standard non-customers.
+
+**Customers** are only ```POST```´ed during the registratio process and ```DELETE```´d and ```GET```´d and by backoffice admin
+
+### Create new customer [POST]
+
+#### Body
+
+    Field         | Details            | Type         | Required      | Default       |
+    :------------ |:-------------------| :------------| -----------:  | -----------:  |
+    name          | Customer name      | string       | true          | n/a           |
+    lastName      | Customer last name | string       | true          | n/a           |
+    email         | email              | string       | true          | n/a           |
+    idCard        | DNI                | string       | true          | n/a           |
+
+
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "id":"2e8cc75b-bae5-4a3d-ae5a-3928c07e330f",
+                "name" : "Alfred",
+                "lastName" : "Joseph Hitchcock",
+                "email":"alfred.hitchcock@indiscreet.com",
+                "idCard":"50861048K"
+            }
+
+    + Schema
+
+            {
+              "$schema": "http://json-schema.org/draft-04/schema",
+              "id": "customerPost",
+              "type": "object",
+              "required": [
+                "name",
+                "lastName",
+                "email",
+                "idCard"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "lastName": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "idCard": {
+                  "type": "string"
+                }
+              }
+            }
+
++ Response 201
+
+    + Body
+
+            {
+                "_links": {
+                    "self": { "method":"GET", "href": "/api/me", "api":"test"}
+                }
+            }
+
++ Response 409  (application/json)
+
+    + Body
+
+            {
+                "code": "existingIdentifier",
+                "description": "Attempting to create a customer with an existing identifier"
+            }
+
++ Response 409  (application/json)
+
+    + Body
+
+            {
+                "code": "existingIdCard",
+                "description": "Attempting to create a customer with an existing idCard"
+            }
+
++ Response 409  (application/json)
+
+    + Body
+
+            {
+                "code": "existingMobilePhone",
+                "description": "Attempting to create a customer with an existing mobile phone"
+            }
+
+## Customer [/customers/{id}]
+
+### Delete a customer [DELETE]
+
+For Backoffice use only.
+
++ Parameters
+    + id (string) ... customer identifier
+
++ Request
+
+    + Header
+
+            Authorization: token 213q3513d13w65r1235eg16w5e4g6w5e13sg5e4g
+
++ Response 204
+
++ Response 404
+
+        The customer doesn't exist
+
+
+# Group me
+
+## Me [/me]
+
+Me is the root element of the API. This kickass resource can be accessed directly to retrieve the **person** resource, /me can play **different roles** --> TBD (manager, customer, party, app user...), depending on the context and authentication and authorisation.
+
+Any resource under me/ will not include it on its path as it is implicit via `TSEC`.
+
++ Model (application/json)
+
+    + Header
+
+            Authorization: token 213q3513d13w65r1235eg16w5e4g6w5e13sg5e4g
+
+    + Body
+
+
+            {
+                "name": "Alfred",
+                "lastName": "Joseph Hitchcock",
+                "address": {
+                    "addressType": "calle",
+                    "streetAddress": "Maldonado",
+                    "streetNumber": "1",
+                    "houseNumber": "3",
+                    "houseStair": "G",
+                    "houseLetter": "A",
+                    "postcode": "28006",
+                    "town": "Madrid",
+                    "country": "ESP",
+                    "geolocation": {
+                        "latitude": -39.140625,
+                        "longitude": 9.182
+                    }
+                }
+            }
+
+
+### Update my customer [PUT]
+
+Only name, last name and address can be modified.
+
++ Request (application/json)
+
+    [Me][]
+
+    + Schema
+
+            {
+              "$schema": "http://json-schema.org/draft-04/schema",
+              "id": "customerPost",
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "lastName": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "object",
+                  "properties": {
+                    "addressType": {
+                      "type": "string"
+                    },
+                    "streetAddress": {
+                      "type": "string"
+                    },
+                    "streetNumber": {
+                      "type": "string"
+                    },
+                    "houseNumber": {
+                      "type": "string"
+                    },
+                    "houseStair": {
+                      "type": "string"
+                    },
+                    "houseLetter": {
+                      "type": "string"
+                    },
+                    "postcode": {
+                      "type": "string"
+                    },
+                    "town": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "geolocation": {
+                      "type": "object",
+                      "properties": {
+                        "latitude": {
+                          "type": "number"
+                        },
+                        "longitude": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "latitude",
+                        "longitude"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "addressType",
+                    "streetAddress",
+                    "streetNumber",
+                    "postcode",
+                    "town",
+                    "country"
+                  ]
+                }
+              },
+              "anyOf": [
+                {
+                  "required": ["name"]
+                },
+                {
+                  "required": ["lastName"]
+                },
+                {
+                  "required": ["address"]
+                },
+                {
+                  "required": ["email"]
+                }
+              ]
+            }
+
++ Response 201 (application/json)
+
